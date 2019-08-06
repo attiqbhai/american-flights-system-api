@@ -5,9 +5,7 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="3d4c09f5-3b23-4f82-8015-b33c35df79c9" basePath="/gemfire-api/v1" >
-		<http:request-connection host="localhost" port="8085" />
-	</http:request-config>
+	
 	<flow name="process_GetFlightsByDestinationFlow" doc:id="6353d5cb-4f35-42a0-a68a-97ade56794d5" >
 		<ee:transform doc:name="Transform Message" doc:id="73811397-9d8c-4b1f-b3cd-d81b99eadf82" >
 			<ee:message >
