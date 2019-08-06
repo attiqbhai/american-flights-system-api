@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="3d4c09f5-3b23-4f82-8015-b33c35df79c9" basePath="/gemfire-api/v1" >
+		<http:request-connection host="localhost" port="8085" />
+	</http:request-config>
+	<flow name="process_GetFlightsFlow" doc:id="6353d5cb-4f35-42a0-a68a-97ade56794d5" >
+		<http:request method="GET" doc:name="Request" doc:id="f6a93afa-3829-4151-86c0-b3f94588ecca" config-ref="HTTP_Request_configuration" path="/american-flights"/>
+	</flow>
+	<flow name="process_CreateFlightFlow" doc:id="6a78a727-fb17-40ff-aebe-69a1ef954d74" >
+		<set-variable value="#[uuid()]" doc:name="Set Variable" doc:id="a10f773b-bae1-4c2f-af1a-8cc59f696312" variableName="newUuid"/>
+		<ee:transform doc:name="Transform Message" doc:id="2de16ee9-e639-484b-b5d7-ff6f6b1e80e8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    ID: vars.newUuid,
+    code: (payload.code default ""),
+    departureDate: (payload.departureDate default ""),
+    destination: (payload.destination default ""),
+    emptySeats: payload.emptySeats default "",
+    origin: payload.origin as String default "",
+    plane:
+        {
+            totalSeats: payload.plane.totalSeats default 0,
+            "type": payload.plane."type" as String default ""
+        }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request method="POST" doc:name="Request" doc:id="75a40f5c-5210-4374-a676-f5b73cc13a6c" config-ref="HTTP_Request_configuration" path="/american-flights">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"key" : vars.newUuid
+}]]]></http:query-params>
+		</http:request>
+		<set-payload value="#[%dw 2.0
+output application/json
+---
+{
+	ID: vars.newUuid
+}]" doc:name="Set Payload" doc:id="17b8e21a-8faf-4095-81cf-07c5087a8de7" />
+	</flow>
+	<flow name="process_DeleteFlightFlow" doc:id="f7270d53-063b-499d-a544-b8b53dcb9fa9" >
+		<http:request method="DELETE" doc:name="Request" doc:id="86558559-726a-4c38-8a5d-4098c7984387" config-ref="HTTP_Request_configuration" path="/american-flights/{key}">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"key" : vars.ID
+}]]]></http:uri-params>
+		</http:request>
+		<set-payload value='#[%dw 2.0
+output application/json
+---
+{
+	status: "Success"
+}]' doc:name="Set Payload" doc:id="f23f5f6b-d4f9-4854-8500-8b80c9b43878" />
+	</flow>
+	<flow name="process_GetFlightByID" doc:id="bacb3000-32dc-4c12-852b-1856c17acd61" >
+		<http:request method="GET" doc:name="Request" doc:id="1df0a3f5-d7ae-4f77-a4c0-59b6be02d254" config-ref="HTTP_Request_configuration" path="/american-flights/{key}">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"key" : vars.ID
+}]]]></http:uri-params>
+		</http:request>
+	</flow>
+	<flow name="process_UpdateFlightFlow" doc:id="c3476b8b-d489-462b-9c56-30c1ca3ca1fe" >
+		<ee:transform doc:name="Transform Message" doc:id="3c9415c6-50ec-40d6-9775-de02788789ab" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    ID: vars.ID,
+    code: payload.code,
+    departureDate: payload.departureDate,
+    destination: payload.destination,
+    emptySeats: payload.emptySeats,
+    origin: payload.origin,
+    plane:
+        {
+            totalSeats: payload.plane.totalSeats,
+            "type": payload.plane."type"
+        }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request method="PUT" doc:name="Request" doc:id="d87ca717-8800-4d5c-8a0b-f69b0feab5c7" config-ref="HTTP_Request_configuration" path="/american-flights/{key}">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"key" : vars.ID
+}]]]></http:uri-params>
+		</http:request>
+	</flow>
+</mule>

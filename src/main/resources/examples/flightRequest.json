@@ -1,0 +1,12 @@
+{
+  "code": "GQ574",
+  "departureDate": "2016/12/20",
+  "destination": "SFO",
+  "emptySeats": 200,
+  "origin": "ORD",
+  "plane": {
+    "totalSeats": 400,
+    "type": "Boeing 747"
+  },
+  "price": 399
+}
