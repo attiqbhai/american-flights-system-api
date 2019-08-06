@@ -14,13 +14,14 @@ types:
   americanFlightRequest: !include dataTypes/americanFlightRequest.raml
   americanFlightResponse: !include dataTypes/americanFlightResponse.raml
   americanFlightsResponse: !include dataTypes/americanFlightsResponse.raml
+  americanFlightPostResponse: !include dataTypes/americanFlightPostResponse.raml
 
 /flights:
   is: [client-id-required]
   get:
     queryParameters: 
       destination:
-        required: false
+        required: true
         enum: 
           - SFO
           - LAX
@@ -38,7 +39,7 @@ types:
       201:
         body: 
           application/json:
-            
+            type: americanFlightPostResponse
   /{ID}:
     is: [client-id-required]
     get:

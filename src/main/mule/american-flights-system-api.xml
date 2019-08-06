@@ -139,7 +139,14 @@ output application/json
 		<flow-ref doc:name="process_DeleteFlightFlowReference" doc:id="ad674b08-6b18-4c82-a47d-aebfbacfa638" name="process_DeleteFlightFlow"/>
     </flow>
     <flow name="get:\flights:american-flights-system-api-config">
-		<flow-ref doc:name="process_GetFlightsFlowReference" doc:id="a72c3072-3e76-4260-a22c-7e9d35b06ce4" name="process_GetFlightsFlow"/>
+		<ee:transform doc:name="Transform Message" doc:id="474ade41-077a-41a5-bcd8-206335675662" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="destination" ><![CDATA[attributes.queryParams.destination]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="process_GetFlightsByDestinationFlowReference" doc:id="a72c3072-3e76-4260-a22c-7e9d35b06ce4" name="process_GetFlightsByDestinationFlow"/>
     </flow>
     <flow name="get:\flights\(ID):american-flights-system-api-config">
         <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" doc:id="01ff8d00-fb8c-4280-9396-0a0608ea978e">

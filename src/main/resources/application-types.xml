@@ -1,26 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
-  <types:catalog>
-    <types:type name="flightRequestInbound" format="json">
-      <types:shape format="weave" example="examples/flightRequest.json"><![CDATA[%dw 2.0
-
-type flightRequestInbound = {|
-  code: String, 
-  departureDate: String, 
-  destination: String, 
-  emptySeats: Number {"typeId": "int"}, 
-  origin: String, 
-  plane: {|
-    totalSeats: Number {"typeId": "int"}, 
-    "type": String
-  |}, 
-  price: Number {"typeId": "int"}
-|} {"example": "{\"code\":\"GQ574\",\"departureDate\":\"2016\/12\/20\",\"destination\":\"SFO\",\"emptySeats\":200,\"origin\":\"ORD\",\"plane\":{\"totalSeats\":400,\"type\":\"Boeing 747\"},\"price\":399}"}
-
-]]></types:shape>
-    </types:type>
-    <types:type name="test" format="java">
-      <types:shape format="java" element="org.mule.extension.http.api.HttpRequestAttributes"/>
-    </types:type>
-  </types:catalog>
+  <types:catalog/>
+  <types:enrichment select="#474ade41-077a-41a5-bcd8-206335675662"/>
 </types:mule>

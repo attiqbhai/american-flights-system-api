@@ -8,8 +8,27 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="3d4c09f5-3b23-4f82-8015-b33c35df79c9" basePath="/gemfire-api/v1" >
 		<http:request-connection host="localhost" port="8085" />
 	</http:request-config>
-	<flow name="process_GetFlightsFlow" doc:id="6353d5cb-4f35-42a0-a68a-97ade56794d5" >
-		<http:request method="GET" doc:name="Request" doc:id="f6a93afa-3829-4151-86c0-b3f94588ecca" config-ref="HTTP_Request_configuration" path="/american-flights"/>
+	<flow name="process_GetFlightsByDestinationFlow" doc:id="6353d5cb-4f35-42a0-a68a-97ade56794d5" >
+		<ee:transform doc:name="Transform Message" doc:id="73811397-9d8c-4b1f-b3cd-d81b99eadf82" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+[
+	{
+		"@type":  "string",
+    		"@value": vars.destination
+    }
+]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request method="POST" doc:name="Request" doc:id="f6a93afa-3829-4151-86c0-b3f94588ecca" config-ref="HTTP_Request_configuration" path="/queries/{queryId}">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"queryId" : "query-by-destination"
+}]]]></http:uri-params>
+		</http:request>
 	</flow>
 	<flow name="process_CreateFlightFlow" doc:id="6a78a727-fb17-40ff-aebe-69a1ef954d74" >
 		<set-variable value="#[uuid()]" doc:name="Set Variable" doc:id="a10f773b-bae1-4c2f-af1a-8cc59f696312" variableName="newUuid"/>
